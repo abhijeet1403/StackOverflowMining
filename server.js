@@ -57,7 +57,31 @@ fs.readFile(__dirname + '/dumplist/Posts.xml', function (err, data) {
     });
 });
 
+// Text Miner=========================================
+var searchFunction = function (searchtext) {
+    var keyWords = searchtext.split(" ");
+    var resultArray = [];
+
+    for (var word in keyWords) {
+        if (POST_TAGS.hasOwnProperty(keyWords[word])) {
+            var results = findInTags(keyWords[word]);
+            for (var ind in results) {
+                if (!resultArray.includes(results[ind])) {
+                    resultArray.push(results[ind]);
+                }
+            }
+        }
+    }
+    console.log(resultArray);
+    if (resultArray) {
+        return resultArray;
+    } else {
+        return null;
+    }
+}
+
 //Helper Functions ==================
+
 
 var getTagArray = function (tags) {
     tags = tags.replace(/[<>]/g, " ");
@@ -89,6 +113,8 @@ var findInTags = function (searchWord) {
         postIds = POST_TAGS[searchWord].postId;
     }
     console.log("search finished");
+
+    console.log(postIds);
     return postIds;
 }
 
@@ -130,52 +156,28 @@ app.get('/api/tags', function (req, res) {
 
 // search post and send back all posts after searching
 app.post('/api/posts', function (req, res) {
-
     var searchWord = req.body.text;
     var resultArray = findInTags(searchWord);
     if (resultArray) {
         var searchResult = getDATAfrom(resultArray);
         res.json(searchResult);
     }
-    /*
-    // Search a post, information comes from AJAX request from Angular
-    Todo.create({
-        text: req.body.text,
-        done: false
-    }, function (err, todo) {
-        if (err)
-            res.send(err);
-
-        // get and return all the todos after you create another
-        Todo.find(function (err, todos) {
-            if (err)
-                res.send(err)
-            res.json(todos);
-        });
-    });
-    */
-
 });
+
+app.post('/api/search', function (req, res) {
+    var searchResult = searchFunction(req.body.text);
+
+    if (searchResult) {
+        var queriedData = getDATAfrom(searchResult);
+        res.json(queriedData);
+    }
+});
+
 
 // get a post
 app.get('/api/posts/:post_id', function (req, res) {
     console.log("Post Requested" + req.params.post_id);
-
     res.json(POST_JSON[req.params.post_id]);
-    /* Todo.remove({
-         _id: req.params.post_id
-     }, function (err, post) {
-         if (err)
-             res.send(err);
-
-         // get and return all the todos after you create another
-         Todo.find(function (err, todos) {
-             if (err)
-                 res.send(err)
-             res.json(todos);
-         });
-     });*/
-
 });
 
 // application -------------------------------------------------------------

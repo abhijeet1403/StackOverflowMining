@@ -33,7 +33,7 @@ function mainController($scope, $http) {
         // when submitting the add form, send the text to the node API
     $scope.searchPost = function () {
         $scope.pageType = "postList";
-        $http.post('/api/posts', $scope.formData)
+        $http.post('/api/search', $scope.formData)
             .success(function (data) {
                 $scope.formData = {}; // clear the form so our user is ready to enter another
                 $scope.posts = data;
