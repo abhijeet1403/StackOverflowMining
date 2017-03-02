@@ -12,7 +12,6 @@ function mainController($scope, $http) {
             .success(function (data) {
                 $scope.pageType = "tags";
                 $scope.tags = data;
-                console.log(data);
                 $scope.resultLength = Object.keys(data).length;
             })
             .error(function (data) {
@@ -26,7 +25,6 @@ function mainController($scope, $http) {
                 .success(function (data) {
                     $scope.posts = data;
                     $scope.resultLength = data.length;
-                    console.log(data);
                 })
                 .error(function (data) {
                     console.log('Error: ' + data);
@@ -35,13 +33,11 @@ function mainController($scope, $http) {
         // when submitting the add form, send the text to the node API
     $scope.searchPost = function () {
         $scope.pageType = "postList";
-        console.log($scope.formData.text);
         $http.post('/api/posts', $scope.formData)
             .success(function (data) {
                 $scope.formData = {}; // clear the form so our user is ready to enter another
                 $scope.posts = data;
                 $scope.resultLength = data.length;
-                console.log(data);
             })
             .error(function (data) {
                 console.log('Error: ' + data);
@@ -49,7 +45,6 @@ function mainController($scope, $http) {
     };
 
     $scope.getPosts = function (postId) {
-        console.log(postId);
         $scope.pageType = "postList";
 
         $scope.formData.text = postId;
@@ -58,7 +53,6 @@ function mainController($scope, $http) {
                 $scope.formData = {}; // clear the form so our user is ready to enter another
                 $scope.posts = data;
                 $scope.resultLength = data.length;
-                console.log(data);
             })
             .error(function (data) {
                 console.log('Error: ' + data);
@@ -68,12 +62,10 @@ function mainController($scope, $http) {
     // openPost
     $scope.openPost = function (id) {
         $scope.pageType = "postPage";
-        console.log("Opening" + id);
         $http.get('/api/posts/' + id)
             .success(function (data) {
                 $scope.QA = data;
                 $scope.resultLength = Object.keys(data.answers).length;
-
                 console.log(data);
             })
             .error(function (data) {
