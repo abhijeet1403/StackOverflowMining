@@ -1,0 +1,167 @@
+<!-- index.html -->
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="stackOver">
+
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Optimize mobile viewport -->
+
+    <title>Node/Angular Todo App</title>
+
+    <!-- SCROLLS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <!-- load bootstrap -->
+    <style>
+        .list-group-horizontal .list-group-item {
+            display: inline-block;
+        }
+        
+        .list-group-horizontal .list-group-item {
+            margin-bottom: 0;
+            margin-left: -4px;
+            margin-right: 0;
+            border-right-width: 0;
+        }
+        
+        .list-group-horizontal .list-group-item:first-child {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .list-group-horizontal .list-group-item:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 0;
+            border-right-width: 1px;
+        }
+        
+        html {
+            overflow-y: scroll;
+        }
+        
+        body {
+            padding-top: 50px;
+        }
+        
+        #todo-list {
+            margin-bottom: 30px;
+        }
+    </style>
+
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <!-- load jquery -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+    <!-- load angular -->
+    <script src="core.js"></script>
+
+</head>
+<!-- SET THE CONTROLLER AND GET ALL TODOS -->
+
+<body ng-controller="mainController">
+    <div class="container">
+
+        <!-- HEADER AND TODO COUNT -->
+        <div class="jumbotron text-center">
+            <h1>Stack Not Overflowing <span class="badge badge-default">{{ resultLength }}</span></h1>
+        </div>
+        <!-- FORM TO CREATE TODOS -->
+        <div id="todo-form" class="row justify-content-center">
+            <div class="col-sm-10 text-center">
+                <form>
+                    <div class="form-group">
+
+                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                        <input type="text" class="form-control input-lg text-center" placeholder="What is the mass of Moon?" ng-model="formData.text">
+                    </div>
+                    <!-- createToDo() WILL CREATE NEW TODOS -->
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="searchPost()">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-10  text-center">
+                <div class="btn-group btn-group-lg" role="group" aria-label="Choose Type">
+                    <button type="button" class="btn btn-secondary" ng-click="getAlltags()">Get All Categories</button>
+                    <button type="button" class="btn btn-secondary" ng-click="getAllPosts()">Get All Questions</button>
+                </div>
+            </div>
+        </div>
+
+        <div ng-switch="pageType">
+            <div ng-switch-when="tags">
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 ">
+                        <ul class="list-group-horizontal">
+                            <li class="list-group-item" ng-repeat="(key, value) in tags">
+                                <button type="button" class="btn btn-primary btn-lg" ng-click="getPosts(key)">{{key}}
+                                    <span class="badge badge-default badge-pill">{{value.postCount}}</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div ng-switch-when="postList">
+                <div id="todo-list" class="row justify-content-center">
+                    <div class="col-sm-12 col-sm-offset-2">
+                        <div class="checkbox" ng-repeat="post in posts">
+                            <label>
+                                <input type="radio" ng-click="openPost(post.Id)">{{ post.questionTitle }}
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div ng-switch-when="postPage">
+                <div class="row ">
+                    <div class="col-sm-3">
+                        <h2>Question:</h2></div>
+                </div>
+                <div class="row ">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <h3 class="card-header">{{QA.questionTitle}}</h3>
+                            <div class="card-block">
+                                <p class="card-text">
+                                    <div ng-bind-html-unsafe="QA.question.Body"></div>
+                                </p>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <h6 class="card-subtitle mb-2 text-muted">Asked by {{QA.question.OwnerUserId}} on {{QA.question.CreationDate}} Score: {{QA.question.Score}} </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-sm-3">
+                        <h2>Answers:</h2></div>
+                    <div class="col-sm-12 col-sm-offset-2">
+                        <li class="list-group-item" ng-repeat="(key, value) in QA.answers">
+                            <div class="card">
+                                <div class="card-block">
+                                    <p class="card-text">
+                                        <div ng-bind-html-unsafe="value.Body"></div>
+                                    </p>
+
+                                </div>
+                                <div class="card-footer text-muted">
+                                    <h6 class="card-subtitle mb-2 text-muted text-right">Answered by {{value.OwnerUserId}} on {{value.CreationDate}}         Score: {{value.Score}}</h6>
+                                </div>
+                            </div>
+                        </li>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
